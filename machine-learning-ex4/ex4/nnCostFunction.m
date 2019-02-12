@@ -73,8 +73,17 @@ a2 = [ones(size(a2,1),1) a2];
 
 a3 = sigmoid(a2*Theta2');
 
-J = 
+yVec = zeros(m,num_labels);
 
+for i=1:m
+    yVec(i,y(i))=1;
+end
+
+J = -(1/m)*sum(sum( yVec.*log(a3) + (1-yVec).*log(1-a3) ));
+
+regularator = (sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2))) * (lambda/(2*m));
+
+J = J + regularator;
 
 
 
