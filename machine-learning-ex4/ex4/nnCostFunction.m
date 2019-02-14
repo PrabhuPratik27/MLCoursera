@@ -86,15 +86,32 @@ regularator = (sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2))) * (l
 J = J + regularator;
 
 
+for t = 1 : m
+    a_1 = X(t, :); % [1 * 400]
+    z_2 = [1, a_1] * Theta1'; % [1 * 401] * [401 * 25]
+    a_2 = sigmoid(z_2); % [1 * 25]
+    z_3 = [1, a_2] * Theta2'; % [1 * 26] * [26 * 10]
+    a_3 = sigmoid(z_3); % [1 * 10]
 
+    delta3 = a_3; % [1 * 10]
+    delta3(y(t)) = delta3(y(t)) - 1;
 
+    delta2 = delta3 * Theta2; % [1 * 10] * [10*26]
+    delta2 = delta2(2 : end); % [1 * 25]
+    delta2 = delta2 .* sigmoidGradient(z_2); % [1 * 25] .* [1 * 25]
 
+    Theta2_grad = Theta2_grad + delta3' * [1, a_2]; % [26 * 1] * [1 * 10]
+    Theta1_grad = Theta1_grad + delta2' * [1, a_1]; % [401 * 1] * [1 * 25]
+end
+Theta2_grad = Theta2_grad / m;
+Theta1_grad = Theta1_grad / m;
 
-
-
-
-
-
+Theta2_tmp = Theta2;
+Theta1_tmp = Theta1;
+Theta2_tmp(:, 1) = 0;
+Theta1_tmp(:, 1) = 0;
+Theta2_grad = Theta2_grad + lambda / m * Theta2_tmp;
+Theta1_grad = Theta1_grad + lambda / m * Theta1_tmp;
 
 % -------------------------------------------------------------
 
