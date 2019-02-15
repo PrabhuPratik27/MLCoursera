@@ -20,12 +20,15 @@ grad = zeros(size(theta));
 % Note: grad should have the same dimensions as theta
 %
 
+predictions = sigmoid(X*theta);
 
+term1 = y.*log(predictions);
 
+term2 = (1-y).*log(1-predictions);
 
+J = -(1/m)*sum(term1+term2);
 
-
-
+grad = (1 / m) * sum( X .* repmat((sigmoid(X*theta) - y), 1, size(X,2)) );
 
 % =============================================================
 
